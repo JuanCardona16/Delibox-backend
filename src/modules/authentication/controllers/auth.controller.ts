@@ -9,6 +9,7 @@ export class AuthController {
       const response = authServices.register(req, res, next);
       return response;
     } catch (error) {
+      console.log(error)
       return next(error);
     }
   };

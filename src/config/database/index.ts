@@ -1,2 +1,1 @@
-export * from './connectDB';
-export * from './getModel';
+export * from "./mongodb";
