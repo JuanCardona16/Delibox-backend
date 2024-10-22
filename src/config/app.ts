@@ -1,11 +1,10 @@
 import "tsconfig-paths/register";
+import { ApiGlobalPrefix, ApiGlobalPrefixRouteNotFound } from "./constants";
 import dotenv from "dotenv";
 import express from "express";
-import { corsConfig } from "./cors/cors.ts";
-import { setHeaders } from "./headers/setHeaders.ts";
-import { connectToDb } from "./database/connectDB.ts";
-import { handleNotFound } from "./routeNotFound/handleNotFound.ts";
-import { errorGlobalHandler } from "./errors/errorGlobalhandler.ts";
+import { corsConfig, errorGlobalHandler, handleNotFound, setHeaders } from "./api";
+import { URL_DATABASE } from "./constants";
+import { connectToDatabaseMongoAtlas } from "./database";
 import router from "./routes/routes.ts";
 
 dotenv.config();
@@ -13,7 +12,7 @@ dotenv.config();
 const app = express();
 
 // Coneccion a la base de datos
-connectToDb();
+connectToDatabaseMongoAtlas(URL_DATABASE);
 
 app.use(express.json());
 app.use(express.urlencoded({ limit: "1mb", extended: true }));
@@ -27,7 +26,9 @@ app.use(errorGlobalHandler);
 app.disable("x-powered-by");
 
 // Rutes
-app.use("/api", router);
-app.use("*", handleNotFound);
+app.use(ApiGlobalPrefix, router);
+app.use(ApiGlobalPrefixRouteNotFound, handleNotFound);
+
+
 
 export default app;

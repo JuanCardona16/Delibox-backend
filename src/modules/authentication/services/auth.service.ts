@@ -1,18 +1,19 @@
+import { Collection } from "@/config/constants";
 import { getModel } from "@/config/database";
-import { Collection } from "@/constants";
+import { User } from "@/config/entities";
+import { setError } from "@/helpers";
 import { RequestHandler } from "express";
 import UserMongoSchema from "../../user/models/User.model";
-import { setError } from "@/helpers";
 import { comparePassword, generateToken } from "../helpers";
 
 export class AuthServices {
   register: RequestHandler = async (req, res, next) => {
     const userData = req.body;
 
-    const model = getModel(Collection.USERS, UserMongoSchema);
+    const model = getModel<User>(Collection.USERS, UserMongoSchema);
     const user = await model.findOne({ email: userData.email });
 
-    if (!user) return next(setError(404, "User already exists"));
+    if (user) return next(setError(404, "User already exists"));
 
     const newUser = new model(userData);
 
@@ -24,7 +25,7 @@ export class AuthServices {
   };
 
   login: RequestHandler = async (req, res, next) => {
-    const model = getModel(Collection.USERS, UserMongoSchema);
+    const model = getModel<User>(Collection.USERS, UserMongoSchema);
     const userInDB = await model.findOne({ email: req.body.email });
 
     if (!userInDB) return next(setError(401, "Not authorized"));
