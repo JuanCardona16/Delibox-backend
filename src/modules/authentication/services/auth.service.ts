@@ -35,8 +35,6 @@ export class AuthServices {
 
     const token = generateToken({ uuid: userInDB.uuid as string });
 
-    return res.status(200).json({
-      accessToken: token,
-    });
+    return res.status(200).json(token);
   };
 }
