@@ -3,7 +3,7 @@ import { getModel } from "@/config/database";
 import { Admin, Customer } from "@/config/entities";
 import { setError } from "@/helpers";
 import { RequestHandler } from "express";
-import UserMongoSchema from "../../user/models/User.model";
+import RestaurantMongoSchema from "../../user/models/User.model";
 import { comparePassword } from "../helpers";
 import AdminMongoSchema from "@/modules/admin/models/Admin.model";
 import { jwtHelpers, TokenPayload } from "@/config/security";
@@ -44,10 +44,12 @@ export class AuthServices {
   // Registro de usuario con rol específico (USER o ADMIN)
   register: RequestHandler = async (req, res, next) => {
     const { email, rol, ...userData } = req.body; // Extraer rol y datos adicionales
+    console.log(req.body);
 
     const collectionName =
       rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
-    const userSchema = rol === "ADMIN" ? AdminMongoSchema : UserMongoSchema;
+    const userSchema =
+      rol === "ADMIN" ? AdminMongoSchema : RestaurantMongoSchema;
     const model = getModel<Customer | Admin>(collectionName, userSchema);
 
     try {
@@ -73,7 +75,8 @@ export class AuthServices {
 
     const collectionName =
       rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
-    const userSchema = rol === "ADMIN" ? AdminMongoSchema : UserMongoSchema;
+    const userSchema =
+      rol === "ADMIN" ? AdminMongoSchema : RestaurantMongoSchema;
     const model = getModel<Customer | Admin>(collectionName, userSchema);
 
     try {
@@ -87,7 +90,10 @@ export class AuthServices {
 
       // Generar token que incluye el rol
 
-      const token = jwtHelpers.generateToken<string>(userInDB.uuid as string, rol);
+      const token = jwtHelpers.generateToken<string>(
+        userInDB.uuid as string,
+        rol
+      );
 
       return res.status(200).json({ token });
     } catch (error) {

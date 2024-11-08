@@ -78,18 +78,6 @@ export interface Product {
   }[];
 }
 
-// Restaurant.ts
-export interface Restaurant {
-  uuid: string; // ID único del restaurante
-  adminId: Admin; // Administrador del restaurante
-  name: string; // Nombre del restaurante
-  address: string; // Dirección del restaurante
-  phone: string; // Teléfono del restaurante
-  email: string; // Correo electrónico del restaurante
-  menu: Product[]; // Menú de productos disponibles en el restaurante
-  operatingHours: string; // Horario de funcionamiento del restaurante
-}
-
 // Payment.ts
 export interface Payment {
   uuid: string; // ID único del pago
@@ -119,4 +107,16 @@ export interface Driver {
   phone: string; // Teléfono del repartidor
   licensePlate: string; // Matrícula del vehículo del repartidor
   status: "available" | "on_delivery"; // Estado del repartidor (disponible, en entrega)
+}
+
+// Restaurant.ts
+export interface Restaurant {
+  uuid: string; // ID único del restaurante
+  adminId: Admin; // Administrador del restaurante
+  name: string; // Nombre del restaurante
+  address: string; // Dirección del restaurante
+  phone: string; // Teléfono del restaurante
+  email: string; // Correo electrónico del restaurante
+  menuId: string; // Menú de productos disponibles en el restaurante
+  operatingHours: string; // Horario de funcionamiento del restaurante
 }

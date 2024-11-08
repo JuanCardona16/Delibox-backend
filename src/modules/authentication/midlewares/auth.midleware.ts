@@ -4,7 +4,7 @@ import { Admin, Customer } from "@/config/entities/User";
 import { jwtHelpers, TokenPayload } from "@/config/security";
 import { setError } from "@/helpers";
 import { RequestHandler } from "express";
-import UserMongoSchema from "../../user/models/User.model";
+import RestaurantMongoSchema from "../../user/models/User.model";
 import AdminMongoSchema from "@/modules/admin/models/Admin.model";
 
 // export const authorize: RequestHandler = async (req, _res, next) => {
@@ -55,7 +55,10 @@ export const authorize: RequestHandler = async (req, _res, next) => {
     let user;
 
     if (validateToken.rol === "USER") {
-      const userModel = getModel<Customer>(Collection.USERS, UserMongoSchema);
+      const userModel = getModel<Customer>(
+        Collection.USERS,
+        RestaurantMongoSchema
+      );
       user = await userModel.findOne({ uuid: validateToken.uuid });
     } else if (validateToken.rol === "ADMIN") {
       const AdminModel = getModel<Admin>(Collection.ADMINS, AdminMongoSchema);
