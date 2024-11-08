@@ -1,40 +1,97 @@
 import { Collection } from "@/config/constants";
 import { getModel } from "@/config/database";
-import { User } from "@/config/entities";
+import { Admin, Customer } from "@/config/entities";
 import { setError } from "@/helpers";
 import { RequestHandler } from "express";
 import UserMongoSchema from "../../user/models/User.model";
-import { comparePassword, generateToken } from "../helpers";
+import { comparePassword } from "../helpers";
+import AdminMongoSchema from "@/modules/admin/models/Admin.model";
+import { jwtHelpers, TokenPayload } from "@/config/security";
 
 export class AuthServices {
+  // register: RequestHandler = async (req, res, next) => {
+
+  //   const userData = req.body;
+
+  //   const model = getModel<Customer>(Collection.USERS, UserMongoSchema);
+  //   const user = await model.findOne({ email: userData.email });
+
+  //   if (user) return next(setError(404, "User already exists"));
+
+  //   const newUser = new model(userData);
+
+  //   const userInDB = await newUser.save();
+
+  //   return res.status(201).json({
+  //     user: userInDB,
+  //   });
+  // };
+
+  // login: RequestHandler = async (req, res, next) => {
+  //   const model = getModel<Customer>(Collection.USERS, UserMongoSchema);
+  //   const userInDB = await model.findOne({ email: req.body.email });
+
+  //   if (!userInDB) return next(setError(401, "Not authorized"));
+
+  //   if (!comparePassword(req.body.password, userInDB.password))
+  //     return next(setError(403, "Password incorrect"));
+
+  //   const token = generateToken({ uuid: userInDB.uuid as string });
+
+  //   return res.status(200).json(token);
+  // };
+
+  // Registro de usuario con rol específico (USER o ADMIN)
   register: RequestHandler = async (req, res, next) => {
-    const userData = req.body;
+    const { email, rol, ...userData } = req.body; // Extraer rol y datos adicionales
 
-    const model = getModel<User>(Collection.USERS, UserMongoSchema);
-    const user = await model.findOne({ email: userData.email });
+    const collectionName =
+      rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
+    const userSchema = rol === "ADMIN" ? AdminMongoSchema : UserMongoSchema;
+    const model = getModel<Customer | Admin>(collectionName, userSchema);
 
-    if (user) return next(setError(404, "User already exists"));
+    try {
+      // Verificar si el usuario ya existe
+      const existingUser = await model.findOne({ email });
+      if (existingUser) return next(setError(404, "User already exists"));
 
-    const newUser = new model(userData);
+      // Crear y guardar el nuevo usuario
+      const newUser = new model({ ...userData, email, rol });
+      const userInDB = await newUser.save();
 
-    const userInDB = await newUser.save();
-
-    return res.status(201).json({
-      user: userInDB,
-    });
+      return res.status(201).json({
+        user: userInDB,
+      });
+    } catch (error) {
+      return next(setError(500, `Error creating user: ${error}`));
+    }
   };
 
+  // Inicio de sesión de usuario
   login: RequestHandler = async (req, res, next) => {
-    const model = getModel<User>(Collection.USERS, UserMongoSchema);
-    const userInDB = await model.findOne({ email: req.body.email });
+    const { email, password, rol } = req.body;
 
-    if (!userInDB) return next(setError(401, "Not authorized"));
+    const collectionName =
+      rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
+    const userSchema = rol === "ADMIN" ? AdminMongoSchema : UserMongoSchema;
+    const model = getModel<Customer | Admin>(collectionName, userSchema);
 
-    if (!comparePassword(req.body.password, userInDB.password))
-      return next(setError(403, "Password incorrect"));
+    try {
+      // Verificar si el usuario existe
+      const userInDB = await model.findOne({ email });
+      if (!userInDB) return next(setError(401, "Not authorized"));
 
-    const token = generateToken({ uuid: userInDB.uuid as string });
+      // Verificar la contraseña
+      if (!comparePassword(password, userInDB.password))
+        return next(setError(403, "Password incorrect"));
 
-    return res.status(200).json(token);
+      // Generar token que incluye el rol
+
+      const token = jwtHelpers.generateToken<string>(userInDB.uuid as string, rol);
+
+      return res.status(200).json({ token });
+    } catch (error) {
+      return next(setError(500, `Error during login: ${error}`));
+    }
   };
 }
