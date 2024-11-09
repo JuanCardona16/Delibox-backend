@@ -11,8 +11,6 @@ export class UserService {
     // Obtener el uuid y el rol desde req.user, que fue establecido en el middleware de autorización
     const { uuid, rol } = (req as any).user || {};
 
-    console.log(uuid, rol);
-
     if (!uuid || !rol)
       return next(setError(401, "Not authorized - missing token data"));
 
@@ -29,9 +27,7 @@ export class UserService {
       if (!user) return next(setError(404, "User not found servicio"));
 
       // Retornar la información del usuario autenticado
-      return res.status(200).json({
-        data: user,
-      });
+      return res.status(200).json(user)
     } catch (error) {
       return next(setError(500, `Error retrieving user information: ${error}`));
     }

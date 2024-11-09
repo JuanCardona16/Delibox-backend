@@ -16,7 +16,6 @@ const RestaurantMongoSchema = new mongoose.Schema<Restaurant>(
     },
     email: {
       type: String,
-      required: true,
       trim: true,
       unique: true,
     },
@@ -37,7 +36,6 @@ const RestaurantMongoSchema = new mongoose.Schema<Restaurant>(
     },
     menuId: {
       type: String,
-      required: true,
       trim: true
     },
     operatingHours: {

@@ -6,45 +6,12 @@ import { RequestHandler } from "express";
 import RestaurantMongoSchema from "../../user/models/User.model";
 import { comparePassword } from "../helpers";
 import AdminMongoSchema from "@/modules/admin/models/Admin.model";
-import { jwtHelpers, TokenPayload } from "@/config/security";
+import { jwtHelpers } from "@/config/security";
 
 export class AuthServices {
-  // register: RequestHandler = async (req, res, next) => {
-
-  //   const userData = req.body;
-
-  //   const model = getModel<Customer>(Collection.USERS, UserMongoSchema);
-  //   const user = await model.findOne({ email: userData.email });
-
-  //   if (user) return next(setError(404, "User already exists"));
-
-  //   const newUser = new model(userData);
-
-  //   const userInDB = await newUser.save();
-
-  //   return res.status(201).json({
-  //     user: userInDB,
-  //   });
-  // };
-
-  // login: RequestHandler = async (req, res, next) => {
-  //   const model = getModel<Customer>(Collection.USERS, UserMongoSchema);
-  //   const userInDB = await model.findOne({ email: req.body.email });
-
-  //   if (!userInDB) return next(setError(401, "Not authorized"));
-
-  //   if (!comparePassword(req.body.password, userInDB.password))
-  //     return next(setError(403, "Password incorrect"));
-
-  //   const token = generateToken({ uuid: userInDB.uuid as string });
-
-  //   return res.status(200).json(token);
-  // };
-
   // Registro de usuario con rol específico (USER o ADMIN)
   register: RequestHandler = async (req, res, next) => {
     const { email, rol, ...userData } = req.body; // Extraer rol y datos adicionales
-    console.log(req.body);
 
     const collectionName =
       rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
@@ -61,9 +28,12 @@ export class AuthServices {
       const newUser = new model({ ...userData, email, rol });
       const userInDB = await newUser.save();
 
-      return res.status(201).json({
-        user: userInDB,
-      });
+      const token = jwtHelpers.generateToken<string>(
+        userInDB.uuid as string,
+        rol
+      );
+
+      return res.status(201).json(token);
     } catch (error) {
       return next(setError(500, `Error creating user: ${error}`));
     }
@@ -95,7 +65,7 @@ export class AuthServices {
         rol
       );
 
-      return res.status(200).json({ token });
+      return res.status(200).json(token);
     } catch (error) {
       return next(setError(500, `Error during login: ${error}`));
     }
