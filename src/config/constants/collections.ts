@@ -4,7 +4,8 @@ export enum Collection {
   RESTAURANTS = 'restaurants',
   ORDERS = 'orders',
   RECIPES = 'recipes',
-  PAYMENTS = 'payments'
+  PAYMENTS = 'payments',
+  MENUS = 'menu'
 }
 
 export enum RequestMethods {

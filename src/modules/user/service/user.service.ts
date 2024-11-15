@@ -1,7 +1,7 @@
 import { getModel } from "@/config/database";
 import { Collection } from "@/config/constants";
 import { RequestHandler } from "express";
-import RestaurantMongoSchema from "../models/User.model";
+import RestaurantMongoSchema from "../../restaurant/model/Restaurant.model";
 import { setError } from "@/helpers";
 import { Admin, Customer } from "@/config/entities";
 import AdminMongoSchema from "@/modules/admin/models/Admin.model";
@@ -27,7 +27,7 @@ export class UserService {
       if (!user) return next(setError(404, "User not found servicio"));
 
       // Retornar la información del usuario autenticado
-      return res.status(200).json(user)
+      return res.status(200).json(user);
     } catch (error) {
       return next(setError(500, `Error retrieving user information: ${error}`));
     }

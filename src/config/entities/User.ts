@@ -69,7 +69,7 @@ export interface Product {
   name: string; // Nombre del producto
   description: string; // Descripción del producto
   price: number; // Precio del producto
-  category: Category; // Categoría del producto
+  category: string; // Categoría del producto
   size?: string; // Tamaño del producto, si aplica
   isAvailable: boolean; // Indica si el producto está disponible
   options?: {
@@ -112,11 +112,18 @@ export interface Driver {
 // Restaurant.ts
 export interface Restaurant {
   uuid: string; // ID único del restaurante
-  adminId: Admin; // Administrador del restaurante
+  adminId: string; // Administrador del restaurante
+  description: string; // Descripcion del restaurante
   name: string; // Nombre del restaurante
   address: string; // Dirección del restaurante
   phone: string; // Teléfono del restaurante
   email: string; // Correo electrónico del restaurante
   menuId: string; // Menú de productos disponibles en el restaurante
   operatingHours: string; // Horario de funcionamiento del restaurante
+}
+
+export interface Menu {
+  uuid: string;
+  restaurantUuid: string;
+  products: Product[]
 }

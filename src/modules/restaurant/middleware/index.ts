@@ -1,32 +1,48 @@
-import { Request, Response, NextFunction } from 'express';
-import { jwtHelpers } from './../../../config/security/security';
-import { setError } from '@/helpers';
+import { Request, Response, NextFunction } from "express";
+import { jwtHelpers } from "./../../../config/security/security";
+import { setError } from "@/helpers";
+import AdminMongoSchema from "@/modules/admin/models/Admin.model";
+import { getModel } from "@/config/database";
+import { Admin } from "@/config/entities";
+import { Collection } from "@/config/constants";
 
 // Middleware para verificar si el usuario es ADMIN
-export const requireAdminRole = (req: Request, res: Response, next: NextFunction) => {
+export const requireAdminRole = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     // 1. Obtén el token del encabezado de autorización
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return next(setError(401, 'No token provided'));
-    }
+    const tokenCookie = req.cookies.access_token;
 
-    // 2. Extrae el token
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      return next(setError(401, 'Token format is invalid'));
-    }
+    // const authHeader = req.headers.authorization;
+    if (!tokenCookie) return next(setError(400, "Not authorized"));
 
     // 3. Verifica y decodifica el token
-    const user = jwtHelpers.verifyToken<string>(token);
-    if (!user) {
-      return next(setError(401, 'Invalid or expired token'));
+    const validateToken = jwtHelpers.verifyToken<string>(tokenCookie);
+
+    if (!validateToken) {
+      console.log("Token verification failed: token is invalid or expired");
+      return next(setError(401, "Not authorized - invalid token"));
     }
 
+    // Validar el token y obtener el rol
+    if (!validateToken || !validateToken.uuid || !validateToken.rol)
+      return next(setError(401, "Not authorized - invalid token"));
+
     // 4. Verifica que el rol sea "ADMIN"
-    if (user.rol !== 'ADMIN') {
-      return next(setError(403, 'Access denied: Admins only'));
+    if (validateToken.rol !== "ADMIN") {
+      return next(setError(403, "Access denied: Admins only"));
     }
+
+    const AdminModel = getModel<Admin>(Collection.ADMINS, AdminMongoSchema);
+    const user = await AdminModel.findOne({ uuid: validateToken.uuid });
+
+    if (!user) return next(setError(404, "User not found middleware"));
+
+    // Adjuntar el usuario en la solicitud
+    (req as any).user = user;
 
     // Continúa con el siguiente middleware o controlador
     next();

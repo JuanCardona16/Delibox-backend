@@ -1,10 +1,10 @@
 import { Collection } from "@/config/constants";
 import { getModel } from "@/config/database";
 import { Admin, Customer } from "@/config/entities/User";
-import { jwtHelpers, TokenPayload } from "@/config/security";
+import { jwtHelpers } from "@/config/security";
 import { setError } from "@/helpers";
 import { RequestHandler } from "express";
-import RestaurantMongoSchema from "../../user/models/User.model";
+import CustomerMongoSchema from "../../user/models/Customer.model";
 import AdminMongoSchema from "@/modules/admin/models/Admin.model";
 
 // export const authorize: RequestHandler = async (req, _res, next) => {
@@ -35,12 +35,13 @@ import AdminMongoSchema from "@/modules/admin/models/Admin.model";
 
 export const authorize: RequestHandler = async (req, _res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) return next(setError(400, "Not authorized"));
+    const tokenCookie = req.cookies.access_token;
+
+    if (!tokenCookie) return next(setError(400, "Not authorized"));
 
     // Obtener el token de la cabecera de autorización
-    const token = authHeader.split(" ")[1];
-    const validateToken = jwtHelpers.verifyToken<string>(token);
+    // const token = authHeader.split(" ")[1];
+    const validateToken = jwtHelpers.verifyToken<string>(tokenCookie);
 
     if (!validateToken) {
       console.log("Token verification failed: token is invalid or expired");
@@ -55,10 +56,7 @@ export const authorize: RequestHandler = async (req, _res, next) => {
     let user;
 
     if (validateToken.rol === "USER") {
-      const userModel = getModel<Customer>(
-        Collection.USERS,
-        RestaurantMongoSchema
-      );
+      const userModel = getModel<Customer>(Collection.USERS, CustomerMongoSchema);
       user = await userModel.findOne({ uuid: validateToken.uuid });
     } else if (validateToken.rol === "ADMIN") {
       const AdminModel = getModel<Admin>(Collection.ADMINS, AdminMongoSchema);

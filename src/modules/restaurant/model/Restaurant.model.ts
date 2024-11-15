@@ -1,48 +1,58 @@
 import mongoose from "mongoose";
-import crypto from "node:crypto";
-import { validatePassword, passwordHash } from "../../authentication/helpers";
-import { Customer } from "@/config/entities";
+import { Restaurant } from "@/config/entities";
 
-const UserMongoSchema = new mongoose.Schema<Customer>(
+const RestaurantMongoSchema = new mongoose.Schema<Restaurant>(
   {
     uuid: {
       type: String,
       unique: true,
       default: () => crypto.randomUUID(),
     },
-    username: {
+    name: {
       type: String,
-      required: true,
       trim: true,
+      required: true
+    },
+    description: {
+      type: String,
+      trim: true,
+      required: true
     },
     email: {
       type: String,
-      required: true,
       trim: true,
       unique: true,
+      required: true
     },
-    password: {
+    address: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    adminId: {
       type: String,
       required: true,
       trim: true,
     },
     phone: {
       type: String,
-      required: true,
+      trim: true,
+      required: true
+    },
+    menuId: {
+      type: String,
       trim: true,
     },
-    rol: {
+    operatingHours: {
       type: String,
-      required: true,
+      trim: true,
+      required: true
     },
-    address: [
-      {
-        addressLine1: String,
-      },
-    ],
   },
   {
     timestamps: true,
     versionKey: false,
   }
 );
+
+export default RestaurantMongoSchema;
