@@ -2,7 +2,7 @@ import cors from 'cors'
 
 export const corsConfig = () => {
   return cors({
-    origin: '*',
+    origin: 'http://localhost:5173',
     optionsSuccessStatus: 200,
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],

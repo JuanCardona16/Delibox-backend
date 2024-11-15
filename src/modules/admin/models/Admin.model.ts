@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 import crypto from "node:crypto";
 import { validatePassword, passwordHash } from "../../authentication/helpers";
 import { setError } from "@/helpers";
+import { Admin } from "@/config/entities";
 
-const UserMongoSchema = new mongoose.Schema(
+const AdminMongoSchema = new mongoose.Schema<Admin>(
   {
     uuid: {
       type: String,
@@ -26,6 +27,23 @@ const UserMongoSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    restaurantId: {
+      type: String,
+    },
+    rol: {
+      type: String,
+      required: true,
+    },
+    address: [
+      {
+        addressLine1: String,
+      },
+    ],
   },
   {
     timestamps: true,
@@ -33,7 +51,7 @@ const UserMongoSchema = new mongoose.Schema(
   }
 );
 
-UserMongoSchema.pre("save", function (next) {
+AdminMongoSchema.pre("save", function (next) {
   if (!validatePassword(this.password)) {
     return next(setError(400, "Invalid password"));
   }
@@ -41,4 +59,4 @@ UserMongoSchema.pre("save", function (next) {
   next();
 });
 
-export default UserMongoSchema;
+export default AdminMongoSchema;

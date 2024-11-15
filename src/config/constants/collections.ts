@@ -1,5 +1,11 @@
 export enum Collection {
-  USERS = 'users'
+  USERS = 'users',
+  ADMINS = 'admins',
+  RESTAURANTS = 'restaurants',
+  ORDERS = 'orders',
+  RECIPES = 'recipes',
+  PAYMENTS = 'payments',
+  MENUS = 'menu'
 }
 
 export enum RequestMethods {

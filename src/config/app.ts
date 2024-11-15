@@ -6,6 +6,7 @@ import { corsConfig, errorGlobalHandler, handleNotFound, setHeaders } from "./ap
 import { URL_DATABASE } from "./constants";
 import { connectToDatabaseMongoAtlas } from "./database";
 import router from "./routes/routes.ts";
+import cookieParse from 'cookie-parser'
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ const app = express();
 connectToDatabaseMongoAtlas(URL_DATABASE);
 
 app.use(express.json());
+app.use(cookieParse())
 app.use(express.urlencoded({ limit: "1mb", extended: true }));
 
 app.use(setHeaders);
@@ -28,7 +30,5 @@ app.disable("x-powered-by");
 // Rutes
 app.use(ApiGlobalPrefix, router);
 app.use(ApiGlobalPrefixRouteNotFound, handleNotFound);
-
-
 
 export default app;

@@ -9,7 +9,7 @@ export class AuthController {
       const response = authServices.register(req, res, next);
       return response;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       return next(error);
     }
   };
@@ -17,6 +17,15 @@ export class AuthController {
   login: RequestHandler = async (req, res, next) => {
     try {
       const response = authServices.login(req, res, next);
+      return response;
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  logout: RequestHandler = async (req, res, next) => {
+    try {
+      const response = authServices.logout(req, res, next);
       return response;
     } catch (error) {
       return next(error);

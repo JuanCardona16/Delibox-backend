@@ -18,5 +18,6 @@ authRoutes.post(
   validateSchema(loginSchemaZod),
   asyncHandler(authController.login)
 );
+authRoutes.post(PUBLIC_ROUTES.LOGOUT, asyncHandler(authController.logout));
 
 export default authRoutes;
