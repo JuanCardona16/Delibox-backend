@@ -16,7 +16,7 @@ authRoutes.post(
 authRoutes.post(
   PUBLIC_ROUTES.LOGIN,
   validateSchema(loginSchemaZod),
-  asyncHandler(authController.login)
+  asyncHandler(authController.login)  
 );
 authRoutes.post(PUBLIC_ROUTES.LOGOUT, asyncHandler(authController.logout));
 
