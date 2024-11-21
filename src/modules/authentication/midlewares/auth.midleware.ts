@@ -35,7 +35,8 @@ import AdminMongoSchema from "@/modules/admin/models/Admin.model";
 
 export const authorize: RequestHandler = async (req, _res, next) => {
   try {
-    const tokenCookie = req.cookies.access_token;
+    // const userTokenCookie = req.cookies.user_access_token;
+    const tokenCookie = req.cookies.admin_access_token;
 
     if (!tokenCookie) return next(setError(400, "Not authorized"));
 

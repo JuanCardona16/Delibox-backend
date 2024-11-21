@@ -72,10 +72,11 @@ export interface Product {
   category: string; // Categoría del producto
   size?: string; // Tamaño del producto, si aplica
   isAvailable: boolean; // Indica si el producto está disponible
-  options?: {
-    name: string; // Nombre de la opción adicional
-    additionalCost: number; // Costo adicional de la opción
-  }[];
+  estimatedPreparatiTime: string;
+  // options?: {
+  //   name: string; // Nombre de la opción adicional
+  //   additionalCost: number; // Costo adicional de la opción
+  // }[];
 }
 
 // Payment.ts

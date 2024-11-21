@@ -9,7 +9,24 @@ export class RestaurantController {
       const response = restaurantServices.create(req, res, next);
       return response;
     } catch (error) {
-      console.log(error);
+      return next(error);
+    }
+  };
+
+  getRestaurantInfo: RequestHandler = async (req, res, next) => {
+    try {
+      const response = restaurantServices.getRestaurantInfo(req, res, next);
+      return response;
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  getAllRestaurants: RequestHandler = async (req, res, next) => {
+    try {
+      const response = restaurantServices.getAllRestaurants(req, res, next);
+      return response;
+    } catch (error) {
       return next(error);
     }
   };

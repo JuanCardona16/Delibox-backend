@@ -11,23 +11,23 @@ const RestaurantMongoSchema = new mongoose.Schema<Restaurant>(
     name: {
       type: String,
       trim: true,
-      required: true
+      required: true,
     },
     description: {
       type: String,
       trim: true,
-      required: true
+      required: true,
     },
     email: {
       type: String,
       trim: true,
       unique: true,
-      required: true
+      required: true,
     },
     address: {
       type: String,
       trim: true,
-      required: true
+      required: true,
     },
     adminId: {
       type: String,
@@ -37,7 +37,7 @@ const RestaurantMongoSchema = new mongoose.Schema<Restaurant>(
     phone: {
       type: String,
       trim: true,
-      required: true
+      required: true,
     },
     menuId: {
       type: String,
@@ -46,7 +46,7 @@ const RestaurantMongoSchema = new mongoose.Schema<Restaurant>(
     operatingHours: {
       type: String,
       trim: true,
-      required: true
+      required: true,
     },
   },
   {

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Menu, Product } from "@/config/entities";
+import { Menu } from "@/config/entities";
 
 const MenuMongoSchema = new mongoose.Schema<Menu>(
   {
@@ -44,20 +44,24 @@ const MenuMongoSchema = new mongoose.Schema<Menu>(
           type: Boolean,
           required: true,
         },
-        options: [
-          {
-            name: {
-              type: String,
-              required: true,
-            },
-            additionalCost: {
-              type: Number,
-              required: true,
-            },
-          },
-        ],
-      }
-    ]
+        estimatedPreparatiTime: {
+          type: String,
+          required: true,
+        },
+        // options: [
+        //   {
+        //     name: {
+        //       type: String,
+        //       required: true,
+        //     },
+        //     additionalCost: {
+        //       type: Number,
+        //       required: true,
+        //     },
+        //   },
+        // ],
+      },
+    ],
   },
   {
     timestamps: true,
