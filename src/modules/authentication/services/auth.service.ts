@@ -78,7 +78,7 @@ export class AuthServices {
       // Configurar y enviar la cookie correspondiente
       res.cookie(cookieName, token, {
         httpOnly: true,
-        secure: false, // Cambiar a true si usas HTTPS en producción
+        secure: true, // Cambiar a true si usas HTTPS en producción
         sameSite: "none",
         path: "/", // Opcional: puedes limitarla a una ruta específica
       });
