@@ -21,4 +21,13 @@ export class RestaurantController {
       return next(error);
     }
   };
+
+  getAllRestaurants: RequestHandler = async (req, res, next) => {
+    try {
+      const response = restaurantServices.getAllRestaurants(req, res, next);
+      return response;
+    } catch (error) {
+      return next(error);
+    }
+  };
 }

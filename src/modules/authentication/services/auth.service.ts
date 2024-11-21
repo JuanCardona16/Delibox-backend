@@ -3,7 +3,7 @@ import { getModel } from "@/config/database";
 import { Admin, Customer } from "@/config/entities";
 import { setError } from "@/helpers";
 import { RequestHandler } from "express";
-import RestaurantMongoSchema from "../../restaurant/model/Restaurant.model";
+import UserMongoSchema from "@/modules/user/models/Customer.model";
 import { comparePassword } from "../helpers";
 import AdminMongoSchema from "@/modules/admin/models/Admin.model";
 import { jwtHelpers } from "@/config/security";
@@ -12,11 +12,11 @@ export class AuthServices {
   // Registro de usuario con rol específico (USER o ADMIN)
   register: RequestHandler = async (req, res, next) => {
     const { email, rol, ...userData } = req.body; // Extraer rol y datos adicionales
+    console.log(req.body);
 
     const collectionName =
       rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
-    const userSchema =
-      rol === "ADMIN" ? AdminMongoSchema : RestaurantMongoSchema;
+    const userSchema = rol === "ADMIN" ? AdminMongoSchema : UserMongoSchema;
     const model = getModel<Customer | Admin>(collectionName, userSchema);
 
     try {
@@ -49,11 +49,11 @@ export class AuthServices {
   // Inicio de sesión de usuario
   login: RequestHandler = async (req, res, next) => {
     const { email, password, rol } = req.body;
+    console.log(req.body)
 
     const collectionName =
       rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
-    const userSchema =
-      rol === "ADMIN" ? AdminMongoSchema : RestaurantMongoSchema;
+    const userSchema = rol === "ADMIN" ? AdminMongoSchema : UserMongoSchema;
     const model = getModel<Customer | Admin>(collectionName, userSchema);
 
     try {
@@ -71,15 +71,41 @@ export class AuthServices {
         rol
       );
 
-      res.cookie("access_token", token, {
+      // Asignar el nombre de la cookie según el rol
+      const cookieName =
+        rol === "USER" ? "user_access_token" : "admin_access_token";
+
+      // Configurar y enviar la cookie correspondiente
+      res.cookie(cookieName, token, {
         httpOnly: true,
-        secure: false,
+        secure: false, // Cambiar a true si usas HTTPS en producción
         sameSite: "lax",
+        path: "/", // Opcional: puedes limitarla a una ruta específica
       });
 
-      return res
-        .status(200)
-        .json({ success: true, message: "Inicio de sesión exitoso!" });
+      // Respuesta de éxito
+      return res.status(200).json({
+        success: true,
+        message: "Inicio de sesión exitoso!",
+      });
+
+      // if (rol === "USER") {
+      //   res.cookie("user_access_token", token, {
+      //     httpOnly: true,
+      //     secure: false,
+      //     sameSite: "lax",
+      //   });
+      // } else if (rol === "ADMIN") {
+      //   res.cookie("admin_access_token", token, {
+      //     httpOnly: true,
+      //     secure: false,
+      //     sameSite: "lax",
+      //   });
+      // }
+
+      // return res
+      //   .status(200)
+      //   .json({ success: true, message: "Inicio de sesión exitoso!" });
     } catch (error) {
       return next(setError(500, `Error during login: ${error}`));
     }

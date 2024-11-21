@@ -111,4 +111,34 @@ export class RestaurantService {
       return next(setError(500, `Error get restaurant info: ${error}`));
     }
   };
+
+  getAllRestaurants: RequestHandler = async (req, res, next) => {
+    try {
+      const { uuid, rol } = (req as any).user || {};
+
+      if (!uuid || !rol) return next(setError(401, "Not authorized"));
+
+      const model = getModel<Restaurant>(
+        Collection.RESTAURANTS,
+        RestaurantMongoSchema
+      );
+      const restaurants = await model.find()
+
+      console.log(restaurants)
+
+      if (!restaurants)
+        return next(setError(500, "An unexpected error has occurred"));
+
+
+      return res.status(200).json({
+        success: true,
+        message: "Se recibio la info correctamente!",
+        info: restaurants,
+      });
+    } catch (error) {
+      return next(setError(500, `Error get restaurant info: ${error}`));
+    }
+  };
+
+
 }

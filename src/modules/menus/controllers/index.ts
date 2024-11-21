@@ -21,4 +21,22 @@ export class MenuController {
       return next(error);
     }
   };
+
+  getMenuInfoForCustomer: RequestHandler = async (req, res, next) => {
+    try {
+      const response = menuServices.getMenuProductsForClient(req, res, next)
+      return response
+    } catch (error) {
+      return next(error)
+    }
+  }
+
+  getMenuByIdForCustomer: RequestHandler = async (req, res, next) => {
+    try {
+      const response = menuServices.getMenuByIdForClient(req, res, next)
+      return response
+    } catch (error) {
+      return next(error)
+    }
+  }
 }
