@@ -33,9 +33,16 @@ export class AuthServices {
         rol
       );
 
-      res.cookie("access_token", token, {
+      // Asignar el nombre de la cookie según el rol
+      const cookieName =
+        rol === "USER" ? "user_access_token" : "admin_access_token";
+
+      // Configurar y enviar la cookie correspondiente
+      res.cookie(cookieName, token, {
         httpOnly: true,
-        secure: false,
+        secure: true, // Cambiar a true si usas HTTPS en producción
+        sameSite: "none",
+        path: "/", // Opcional: puedes limitarla a una ruta específica
       });
 
       return res
@@ -49,7 +56,7 @@ export class AuthServices {
   // Inicio de sesión de usuario
   login: RequestHandler = async (req, res, next) => {
     const { email, password, rol } = req.body;
-    console.log(req.body)
+    console.log(req.body);
 
     const collectionName =
       rol === "ADMIN" ? Collection.ADMINS : Collection.USERS;
@@ -112,12 +119,24 @@ export class AuthServices {
   };
 
   // logout
-  logout: RequestHandler = async (_req, res, _next) => {
-    res.clearCookie("access_token", {
-      httpOnly: true,
-      secure: false, // Cambia a true en producción con HTTPS
-      sameSite: "lax",
-    });
+  logout: RequestHandler = async (req, res, _next) => {
+    const data = req.body;
+
+    if (data.rol === "USER") {
+      res.clearCookie("user_access_token", {
+        httpOnly: true,
+        secure: true, // Cambiar a true si usas HTTPS en producción
+        sameSite: "none",
+        path: "/", // Opcional: puedes limitarla a una ruta específica
+      });
+    } else if (data.rol === "ADMIN") {
+      res.clearCookie("admin_access_token", {
+        httpOnly: true,
+        secure: true, // Cambiar a true si usas HTTPS en producción
+        sameSite: "none",
+        path: "/", // Opcional: puedes limitarla a una ruta específica
+      });
+    }
     return res
       .status(200)
       .json({ success: true, message: "Sesión cerrada correctamente" });
