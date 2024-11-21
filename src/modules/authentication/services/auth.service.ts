@@ -79,7 +79,7 @@ export class AuthServices {
       res.cookie(cookieName, token, {
         httpOnly: true,
         secure: false, // Cambiar a true si usas HTTPS en producción
-        sameSite: "lax",
+        sameSite: "none",
         path: "/", // Opcional: puedes limitarla a una ruta específica
       });
 
