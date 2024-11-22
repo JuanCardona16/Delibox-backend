@@ -30,4 +30,13 @@ export class RestaurantController {
       return next(error);
     }
   };
+
+  getRestaurantById: RequestHandler = async (req, res, next) => {
+    try {
+      const response = restaurantServices.getRestaurantById(req, res, next);
+      return response;
+    } catch (error) {
+      return next(error);
+    }
+  }
 }

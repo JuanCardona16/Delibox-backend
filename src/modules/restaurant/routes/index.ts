@@ -9,19 +9,15 @@ const restaurantRoutes = Router();
 const restaurantController = new RestaurantController();
 const menuController = new MenuController();
 
-// methos POSTs
+// Routes for app administrators
 restaurantRoutes.post("/create", requireAdminRole, restaurantController.create);
 restaurantRoutes.post("/menu", requireAdminRole, menuController.updateMenu);
-
-// methos GETs
 restaurantRoutes.get("/info", requireAdminRole, restaurantController.getRestaurantInfo);
+restaurantRoutes.get("/menu", requireAdminRole, menuController.getInfo);
 
 // Routes for app Customer
-restaurantRoutes.get("/menu", requireAdminRole, menuController.getInfo);
 restaurantRoutes.get("/all", requireUserRole, restaurantController.getAllRestaurants);
 restaurantRoutes.get("/menu/:menuUuid", requireUserRole, menuController.getMenuByIdForCustomer);
-
-
-
+restaurantRoutes.get("/:restaurantUuid", requireUserRole, restaurantController.getRestaurantById)
 
 export default restaurantRoutes;
