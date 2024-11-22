@@ -10,9 +10,11 @@ export const corsConfig = () => {
   return cors({
     origin: (origin, callback) => {
       // Si el origen no está definido (ejemplo: solicitudes desde herramientas como Postman) o está en la lista permitida, permite el acceso
+      console.log("Solicitud desde origen:", origin);
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error(`Origen no permitido por CORS: ${origin}`);
         callback(new Error('Not allowed by CORS'));
       }
     },
