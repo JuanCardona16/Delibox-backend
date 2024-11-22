@@ -18,7 +18,9 @@ export interface RestaurantResponse {
   menuId: string;
 }
 
-export const restaurantAdapter = (restaurant: Restaurant): RestaurantResponse => {
+export const restaurantAdapter = (
+  restaurant: Restaurant
+): RestaurantResponse => {
   return {
     uuid: restaurant.uuid,
     name: restaurant.name,
@@ -73,7 +75,10 @@ export class RestaurantService {
         return next(setError(404, "Admin not found"));
       }
 
-      await AdminModel.updateOne({ uuid }, { restaurantId: restaurantInDb.uuid }); // Evitamos save()
+      await AdminModel.updateOne(
+        { uuid },
+        { restaurantId: restaurantInDb.uuid }
+      ); // Evitamos save()
 
       return res
         .status(201)
@@ -94,13 +99,12 @@ export class RestaurantService {
         Collection.RESTAURANTS,
         RestaurantMongoSchema
       );
-      const restaurant = await model.findOne({ adminId: uuid })
+      const restaurant = await model.findOne({ adminId: uuid });
 
-      console.log(restaurant)
+      console.log(restaurant);
 
       if (!restaurant)
         return next(setError(500, "An unexpected error has occurred"));
-
 
       return res.status(200).json({
         success: true,
@@ -122,13 +126,12 @@ export class RestaurantService {
         Collection.RESTAURANTS,
         RestaurantMongoSchema
       );
-      const restaurants = await model.find()
+      const restaurants = await model.find();
 
-      console.log(restaurants)
+      console.log(restaurants);
 
       if (!restaurants)
         return next(setError(500, "An unexpected error has occurred"));
-
 
       return res.status(200).json({
         success: true,
@@ -140,5 +143,27 @@ export class RestaurantService {
     }
   };
 
+  getRestaurantById: RequestHandler = async (req, res, next) => {
+    try {
+      const { uuid, rol } = (req as any).user || {}
+      const restaurantUuid = req.params
 
+      if (!uuid || !rol) return next(setError(401, "Not authorized"))
+
+      const model = getModel<Restaurant>(Collection.RESTAURANTS, RestaurantMongoSchema)
+      const restaurant = await model.findOne({ uuid: restaurantUuid })
+
+      if (!restaurant) return next(setError(500, "An unexpected error has occurred"))
+
+      return res.status(200).json({
+        success: true,
+        message: "Se recibio la info correctamente!",
+        info: restaurantAdapter(restaurant),
+      });
+
+
+    } catch (error) {
+      return next(setError(500, `Error get restaurant info: ${error}`));
+    }
+  }
 }
