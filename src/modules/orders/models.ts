@@ -1,37 +1,75 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 export interface IOrderItem {
-  productId: string;
+  uuid: string;
   name: string;
-  quantity: number;
+  description: string;
   price: number;
+  quantity: number;
+  size: string;
 }
 
-export interface IOrder extends Document {
-  items: IOrderItem[];
-  total: number;
-  status: "PENDING" | "PREPARING" | "DELIVERED" | "CANCELLED";
-  userId: string;
+export interface Order {
+  uuid: string;
+  restaurantId: string;
+  customerId: string;
+  order: {
+    customerName: string;
+    items: IOrderItem[];
+    total: number;
+    address: string;
+  };
+  status:
+    | "PENDIENTE"
+    | "ENTREGADO"
+    | "EN ESPERA"
+    | "EN PREPARACION"
+    | "CANCELADO"
+    | "RETRASADO"
+    | "EN CAMINO";
   createdAt: Date;
 }
 
-const OrderSchema: Schema = new Schema({
-  items: [
-    {
-      productId: { type: String, required: true },
-      name: { type: String, required: true },
-      quantity: { type: Number, required: true },
-      price: { type: Number, required: true },
+export const OrderMongoSchema = new mongoose.Schema<Order>(
+  {
+    uuid: {
+      type: String,
+      unique: true,
+      default: () => crypto.randomUUID(),
     },
-  ],
-  total: { type: Number, required: true },
-  status: {
-    type: String,
-    enum: ["PENDING", "PREPARING", "DELIVERED", "CANCELLED"],
-    default: "PENDING",
+    restaurantId: { type: String, required: true },
+    customerId: { type: String, required: true },
+    order: {
+      customerName: { type: String, required: true },
+      items: [
+        {
+          uuid: { type: String, required: true },
+          name: { type: String, required: true },
+          quantity: { type: Number, required: true },
+          price: { type: Number, required: true },
+          description: { type: String, required: true },
+          size: { type: String, required: true },
+        },
+      ],
+      total: { type: Number, required: true },
+      address: { type: String, required: true },
+    },
+    status: {
+      type: String,
+      enum: [
+        "PENDIENTE",
+        "ENTREGADO",
+        "EN ESPERA",
+        "EN PREPARACION",
+        "CANCELADO",
+        "RETRASADO",
+      ],
+      default: "PENDIENTE",
+    },
+    createdAt: { type: Date, default: Date.now },
   },
-  userId: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
-
-export const Order = mongoose.model<IOrder>("Order", OrderSchema);
+  {
+    versionKey: false,
+    timestamps: true,
+  }
+);

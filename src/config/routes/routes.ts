@@ -6,13 +6,12 @@ import {
   AuthPrefixRoutes,
   PRIVATE_ROUTES,
   AuthGooglePrefixRoutes,
-  hellow,
 } from "../constants";
 import restaurantRoutes from "@/modules/restaurant/routes";
 
 const router = Router();
 
-router.use(AuthGooglePrefixRoutes, authGoogleRouter);
+router.use(AuthGooglePrefixRoutes, authGoogleRouter); // funcionalidad futura
 router.use(AuthPrefixRoutes, authRoutes);
 router.use(PRIVATE_ROUTES.USER, userRoutes);
 router.use("/restaurant", restaurantRoutes);

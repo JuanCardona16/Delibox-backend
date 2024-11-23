@@ -22,21 +22,49 @@ export class MenuController {
     }
   };
 
-  getMenuInfoForCustomer: RequestHandler = async (req, res, next) => {
+  getProductFromMenuById: RequestHandler = async (req, res, next) => {
     try {
-      const response = menuServices.getMenuProductsForClient(req, res, next)
-      return response
+      const response = menuServices.getMenuByIdForClient(req, res, next);
+      return response;
     } catch (error) {
-      return next(error)
+      return next(error);
     }
   }
 
-  getMenuByIdForCustomer: RequestHandler = async (req, res, next) => {
+  deleteProductFromMenu: RequestHandler = async (req, res, next) => {
     try {
-      const response = menuServices.getMenuByIdForClient(req, res, next)
-      return response
+      const response = menuServices.deleteProductFromMenu(req, res, next);
+      return response;
     } catch (error) {
-      return next(error)
+      return next(error);
     }
   }
+
+  editProductInMenu: RequestHandler = async (req, res, next) => {
+    try {
+      const response = menuServices.editProductInMenu(req, res, next);
+      return response;
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  // For app customers
+  getMenuInfoForCustomer: RequestHandler = async (req, res, next) => {
+    try {
+      const response = menuServices.getMenuProductsForClient(req, res, next);
+      return response;
+    } catch (error) {
+      return next(error);
+    }
+  };
+
+  getMenuByIdForCustomer: RequestHandler = async (req, res, next) => {
+    try {
+      const response = menuServices.getMenuByIdForClient(req, res, next);
+      return response;
+    } catch (error) {
+      return next(error);
+    }
+  };
 }
