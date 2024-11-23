@@ -4,7 +4,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://delibox-client.onrender.com',
-  'https://delibox-backend.onrender.com'
+  'https://delibox-admin.onrender.com'
 ]
 
 export const corsConfig = () => {
