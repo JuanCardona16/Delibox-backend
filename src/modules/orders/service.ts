@@ -10,7 +10,7 @@ class SocketService {
   initialize(httpServer: HttpServer) {
     this.io = new SocketIOServer(httpServer, {
       cors: {
-        origin: ["http://localhost:5173", "http://localhost:5174", "https://delibox-client.onrender.com"],
+        origin: ["http://localhost:5173", "http://localhost:5174", "https://delibox-client.onrender.com", "https://delibox-admin.onrender.com"],
         methods: ["GET", "POST"],
       },
     });
@@ -60,7 +60,7 @@ class SocketService {
             callback({
               status: "ok",
               message: "Pedido recibido correctamente",
-              orderId: newOrder.id,
+              orderId: newOrder.uuid,
             });
           } catch (error) {
             console.error("Error saving order: ", error);
