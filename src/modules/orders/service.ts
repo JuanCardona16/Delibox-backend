@@ -10,7 +10,14 @@ class SocketService {
   initialize(httpServer: HttpServer) {
     this.io = new SocketIOServer(httpServer, {
       cors: {
-        origin: ["http://localhost:5173", "http://localhost:5174", "https://delibox-client.onrender.com", "https://delibox-admin.onrender.com"],
+        origin: [
+          "http://localhost:5173",
+          "http://localhost:5174",
+          "https://delibox-client.onrender.com",
+          "https://delibox-admin.onrender.com",
+          "https://delibox-client.vercel.app",
+          "https://delibox-admin.vercel.app",
+        ],
         methods: ["GET", "POST"],
       },
     });
