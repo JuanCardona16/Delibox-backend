@@ -30,5 +30,9 @@ app.disable("x-powered-by");
 // Rutes
 app.use(ApiGlobalPrefix, router);
 app.use(ApiGlobalPrefixRouteNotFound, handleNotFound);
+// Fastify (ejemplo)
+app.get('/ping', async (request, res) => {
+  res.send({ status: 'ok' });
+});
 
 export default app;
